@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+ <title>Christopher Chapline</title>
+ <link href="gizmo385.github.io/atom.xml" rel="self"/>
+ <link href="gizmo385.github.io/"/>
+ <updated>2014-04-28T17:35:25-07:00</updated>
+ <id>gizmo385.github.io</id>
+ <author>
+   <name>Christopher Chapline</name>
+   <email></email>
+ </author>
+
+ 
+ <entry>
+   <title>Why you should be using Java 8</title>
+   <link href="gizmo385.github.io/2014/04/28/introduction/"/>
+   <updated>2014-04-28T00:00:00-07:00</updated>
+   <id>gizmo385.github.io/2014/04/28/introduction</id>
+   <content type="html">&lt;p&gt;Java 8 was recently released by Oracle and included a large number of improvements and new features that are poised to have the biggest impact on the platform since the introduction of &lt;a href=&quot;http://docs.oracle.com/javase/tutorial/java/generics/&quot;&gt;generics&lt;/a&gt; in Java 5.&lt;/p&gt;
+
+&lt;h1&gt;When did this become a thing?&lt;/h1&gt;
+
+&lt;p&gt;Java 8 was released to the general public on March 18th, 2014, although the features included in the version had been in development for several years after the specification for the update (&lt;a href=&quot;https://jcp.org/en/jsr/detail?id=337&quot;&gt;JSR 337&lt;/a&gt;) was being worked on in the later months of 2010.&lt;/p&gt;
+
+&lt;h1&gt;So what&amp;#39;s included in this update?&lt;/h1&gt;
+
+&lt;p&gt;As with every major version update, a large number of changes were made to the Java platform. The biggest changes that were announced, and the one&amp;#39;s that we&amp;#39;ll be discussing today, include:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Functional interfaces and default methods&lt;/li&gt;
+&lt;li&gt;Lambda expressions&lt;/li&gt;
+&lt;li&gt;Method references&lt;/li&gt;
+&lt;li&gt;The Java Streaming API&lt;/li&gt;
+&lt;li&gt;General API improvements&lt;/li&gt;
+&lt;li&gt;Nashorn: The newest JavaScript engine&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h1&gt;Functional Interfaces&lt;/h1&gt;
+
+&lt;p&gt;Interfaces allow the encapuslation of a specific behavior into something a class must implement. This encapsulation will allow a programmer to uniformly handle any class that implements that interface without having to worry about type errors.&lt;/p&gt;
+
+&lt;p&gt;In Java 8, a new type annotation has been added:&lt;/p&gt;
+
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;java&quot;&gt;&lt;span class=&quot;nd&quot;&gt;@FunctionalInterface&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;A functional interface must contain &lt;strong&gt;exactly one&lt;/strong&gt; abstract method. This means that every other method declared in the interface must be given a &lt;em&gt;default&lt;/em&gt; implementation. Enter default methods:&lt;/p&gt;
+
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;java&quot;&gt;&lt;span class=&quot;nd&quot;&gt;@FunctionalInterface&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;interface&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;Predicate&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;T&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;cm&quot;&gt;/**&lt;/span&gt;
+&lt;span class=&quot;cm&quot;&gt;     * This is our functional interface. It will take an input and&lt;/span&gt;
+&lt;span class=&quot;cm&quot;&gt;     * determine if that input matches the conditions defined in the&lt;/span&gt;
+&lt;span class=&quot;cm&quot;&gt;     * predicate.&lt;/span&gt;
+&lt;span class=&quot;cm&quot;&gt;     *&lt;/span&gt;
+&lt;span class=&quot;cm&quot;&gt;     * @param t The object to test against the predicate&lt;/span&gt;
+&lt;span class=&quot;cm&quot;&gt;     * @return True if the object satisfies the predicate and&lt;/span&gt;
+&lt;span class=&quot;cm&quot;&gt;     * returns false otherwise&lt;/span&gt;
+&lt;span class=&quot;cm&quot;&gt;     */&lt;/span&gt;
+    &lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;boolean&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;test&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;T&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;t&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;
+
+    &lt;span class=&quot;cm&quot;&gt;/**&lt;/span&gt;
+&lt;span class=&quot;cm&quot;&gt;     * This is a default method. Implementing the interface will&lt;/span&gt;
+&lt;span class=&quot;cm&quot;&gt;     * give you access to the methods with a default implementation&lt;/span&gt;
+&lt;span class=&quot;cm&quot;&gt;     * defined in that interface. This method will return a&lt;/span&gt;
+&lt;span class=&quot;cm&quot;&gt;     * Predicate&amp;lt;T&amp;gt; that returns the logical negation of what this&lt;/span&gt;
+&lt;span class=&quot;cm&quot;&gt;     * predicate returns.&lt;/span&gt;
+&lt;span class=&quot;cm&quot;&gt;     *&lt;/span&gt;
+&lt;span class=&quot;cm&quot;&gt;     * @return The predicate that returns the logical negation of&lt;/span&gt;
+&lt;span class=&quot;cm&quot;&gt;     * this predicate.&lt;/span&gt;
+&lt;span class=&quot;cm&quot;&gt;     */&lt;/span&gt;
+    &lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;default&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Predicate&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;T&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;negate&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+        &lt;span class=&quot;n&quot;&gt;Predicate&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;T&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;me&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;this&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;
+
+        &lt;span class=&quot;n&quot;&gt;Predicate&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;T&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;predicate&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Predicate&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;T&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+
+            &lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;boolean&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;test&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;T&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;t&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+                &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;!&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;me&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;test&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;t&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;
+            &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+        &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+
+        &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;predicate&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;
+    &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+</content>
+ </entry>
+ 
+
+</feed>

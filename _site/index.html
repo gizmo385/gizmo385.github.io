@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en-us">
+
+  <head>
+  <link href="http://gmpg.org/xfn/11" rel="profile">
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+
+  <!-- Enable responsiveness on mobile devices-->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+
+  <title>
+    
+      Christopher Chapline &middot; Software Developer
+    
+  </title>
+
+  <!-- CSS -->
+  <link rel="stylesheet" href="/public/css/poole.css">
+  <link rel="stylesheet" href="/public/css/syntax.css">
+  <link rel="stylesheet" href="/public/css/hyde.css">
+  <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=PT+Sans:400,400italic,700|Abril+Fatface">
+
+  <!-- Icons -->
+  <link rel="apple-touch-icon-precomposed" sizes="144x144" href="/public/apple-touch-icon-144-precomposed.png">
+                                 <link rel="shortcut icon" href="/public/favicon.ico">
+
+  <!-- RSS -->
+  <link rel="alternate" type="application/rss+xml" title="RSS" href="/atom.xml">
+</head>
+
+
+  <body>
+
+    <div class="sidebar">
+  <div class="container sidebar-sticky">
+    <div class="sidebar-about">
+      <h1>Christopher Chapline</h1>
+      <p class="lead">Student of Computer Science at the University of Arizona</p>
+    </div>
+
+    <ul class="sidebar-nav">
+      <li class="sidebar-nav-item active">
+        <a href="/">Home</a>
+      </li>
+
+      
+
+      
+      
+        
+          
+        
+      
+        
+          
+        
+      
+        
+      
+        
+          
+            <li class="sidebar-nav-item">
+              <a href="/about/">About</a>
+            </li>
+          
+        
+      
+
+      <li class="sidebar-nav-item"><a href="/resume.pdf">Resume</a></li>
+      <li class="sidebar-nav-item"><a href="http://www.linkedin.com/in/cachapline">Linkedin</a></li>
+      <li class="sidebar-nav-item"><a href="http://github.com/gizmo385">GitHub</a></li>
+      <!--<li class="sidebar-nav-item">Currently v2.0.0</li>-->
+    </ul>
+
+    <p>&copy; 2014. All rights reserved.</p>
+  </div>
+</div>
+
+
+    <div class="content container">
+      <div class="posts">
+  
+  <div class="post">
+    <h1 class="post-title">
+      <a href="/2014/04/28/introduction/">
+        Why you should be using Java 8
+      </a>
+    </h1>
+
+    <span class="post-date">28 Apr 2014</span>
+
+    <p>Java 8 was recently released by Oracle and included a large number of improvements and new features that are poised to have the biggest impact on the platform since the introduction of <a href="http://docs.oracle.com/javase/tutorial/java/generics/">generics</a> in Java 5.</p>
+
+<h1>When did this become a thing?</h1>
+
+<p>Java 8 was released to the general public on March 18th, 2014, although the features included in the version had been in development for several years after the specification for the update (<a href="https://jcp.org/en/jsr/detail?id=337">JSR 337</a>) was being worked on in the later months of 2010.</p>
+
+<h1>So what&#39;s included in this update?</h1>
+
+<p>As with every major version update, a large number of changes were made to the Java platform. The biggest changes that were announced, and the one&#39;s that we&#39;ll be discussing today, include:</p>
+
+<ul>
+<li>Functional interfaces and default methods</li>
+<li>Lambda expressions</li>
+<li>Method references</li>
+<li>The Java Streaming API</li>
+<li>General API improvements</li>
+<li>Nashorn: The newest JavaScript engine</li>
+</ul>
+
+<h1>Functional Interfaces</h1>
+
+<p>Interfaces allow the encapuslation of a specific behavior into something a class must implement. This encapsulation will allow a programmer to uniformly handle any class that implements that interface without having to worry about type errors.</p>
+
+<p>In Java 8, a new type annotation has been added:</p>
+
+<div class="highlight"><pre><code class="java"><span class="nd">@FunctionalInterface</span>
+</code></pre></div>
+
+<p>A functional interface must contain <strong>exactly one</strong> abstract method. This means that every other method declared in the interface must be given a <em>default</em> implementation. Enter default methods:</p>
+
+<div class="highlight"><pre><code class="java"><span class="nd">@FunctionalInterface</span> <span class="kd">public</span> <span class="kd">interface</span> <span class="nc">Predicate</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span> <span class="o">{</span>
+    <span class="cm">/**</span>
+<span class="cm">     * This is our functional interface. It will take an input and</span>
+<span class="cm">     * determine if that input matches the conditions defined in the</span>
+<span class="cm">     * predicate.</span>
+<span class="cm">     *</span>
+<span class="cm">     * @param t The object to test against the predicate</span>
+<span class="cm">     * @return True if the object satisfies the predicate and</span>
+<span class="cm">     * returns false otherwise</span>
+<span class="cm">     */</span>
+    <span class="kd">public</span> <span class="kt">boolean</span> <span class="nf">test</span><span class="o">(</span> <span class="n">T</span> <span class="n">t</span><span class="o">);</span>
+
+    <span class="cm">/**</span>
+<span class="cm">     * This is a default method. Implementing the interface will</span>
+<span class="cm">     * give you access to the methods with a default implementation</span>
+<span class="cm">     * defined in that interface. This method will return a</span>
+<span class="cm">     * Predicate&lt;T&gt; that returns the logical negation of what this</span>
+<span class="cm">     * predicate returns.</span>
+<span class="cm">     *</span>
+<span class="cm">     * @return The predicate that returns the logical negation of</span>
+<span class="cm">     * this predicate.</span>
+<span class="cm">     */</span>
+    <span class="kd">public</span> <span class="k">default</span> <span class="n">Predicate</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span> <span class="nf">negate</span><span class="o">()</span> <span class="o">{</span>
+        <span class="n">Predicate</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span> <span class="n">me</span> <span class="o">=</span> <span class="k">this</span><span class="o">;</span>
+
+        <span class="n">Predicate</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span> <span class="n">predicate</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Predicate</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span> <span class="o">{</span>
+
+            <span class="kd">public</span> <span class="kt">boolean</span> <span class="nf">test</span><span class="o">(</span><span class="n">T</span> <span class="n">t</span><span class="o">)</span> <span class="o">{</span>
+                <span class="k">return</span> <span class="o">!</span> <span class="n">me</span><span class="o">.</span><span class="na">test</span><span class="o">(</span><span class="n">t</span><span class="o">);</span>
+            <span class="o">}</span>
+        <span class="o">}</span>
+
+        <span class="k">return</span> <span class="n">predicate</span><span class="o">;</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div>
+
+  </div>
+  
+</div>
+
+<div class="pagination">
+  
+    <span class="pagination-item older">Older</span>
+  
+  
+    <span class="pagination-item newer">Newer</span>
+  
+</div>
+    </div>
+
+  </body>
+</html>

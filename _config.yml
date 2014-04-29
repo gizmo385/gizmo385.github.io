@@ -1,0 +1,24 @@
+# Dependencies
+markdown:         redcarpet
+pygments:         true
+
+# Permalinks
+permalink:        pretty
+
+# Setup
+title:            Christopher Chapline
+tagline:          'Software Developer'
+description:      'Student of Computer Science at the University of Arizona'
+url:              gizmo385.github.io
+
+author:
+  name:           'Christopher Chapline'
+  url:            gizmo385.github.io
+
+paginate:         5
+
+# Custom vars
+version:          2.0.0
+
+github:
+  repo:           https://github.com/poole/hyde
