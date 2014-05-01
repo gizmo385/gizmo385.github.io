@@ -4,7 +4,7 @@
  <title>Christopher Chapline</title>
  <link href="gizmo385.github.io/atom.xml" rel="self"/>
  <link href="gizmo385.github.io/"/>
- <updated>2014-04-30T11:47:57-07:00</updated>
+ <updated>2014-05-01T04:14:45-07:00</updated>
  <id>gizmo385.github.io</id>
  <author>
    <name>Christopher Chapline</name>
@@ -13,10 +13,34 @@
 
  
  <entry>
+   <title>Summer Projects</title>
+   <link href="gizmo385.github.io/2014/05/01/summer-goals/"/>
+   <updated>2014-05-01T00:00:00-07:00</updated>
+   <id>gizmo385.github.io/2014/05/01/summer-goals</id>
+   <content type="html">&lt;p&gt;Like many other college students around the country, I&amp;#39;m going to be on summer break starting in a few weeks. Along with summer break comes more free time and more time to focus on personal projects. Due to this anticipated free time, I&amp;#39;ve decided that I want to look into starting and finishing a personal project from scratch that will be on a larger scale than the personal projects that I&amp;#39;ve previously worked on. My current idea is to write a parser for a language (one that I don&amp;#39;t currently know) in that language.&lt;/p&gt;
+
+&lt;p&gt;At the moment, I&amp;#39;m looking into various LISP dialects as my &amp;quot;goto&amp;quot; language to do this with, but I&amp;#39;m still unsure. I&amp;#39;ve also considered the possibility of looking into a purely functional language and writing my parser for that (this language would likely be something with a less steep learning curve than a language like Haskell). In addition to that, I&amp;#39;m going to be trying to get some heavy reading done on a few topics:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Graph theory&lt;/li&gt;
+&lt;li&gt;Hashing&lt;/li&gt;
+&lt;li&gt;Parsing&lt;/li&gt;
+&lt;li&gt;Compilers&lt;/li&gt;
+&lt;li&gt;Linear algebra&lt;/li&gt;
+&lt;li&gt;Abstract Algebra&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;The first two topics in that list are of uptmost importance and the second two are likely to come along with the nature of my project idea. Outside of personal projects, I am also taking on an internship at &lt;a href=&quot;http://www.elegantthought.com/&quot;&gt;Elegant Thought&lt;/a&gt; for the summer, where I will be doing Android development. I&amp;#39;m also taking 2 courses at the university, one of which is a programming course that focuses on the more creative aspects of programming (Markov Chains, etc) and is in &lt;a href=&quot;http://www.processing.org/&quot;&gt;Processing&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;Overall, this summer is shaping up to be a rather substantial workload, but a workload that I will enjoy. I would also recommend that other students around the country take the newly found free time to open up a couple personal projects or look into contributing to some open source repositories online. Getting more experience never hurt anyone!&lt;/p&gt;
+</content>
+ </entry>
+ 
+ <entry>
    <title>Why you should be using Java 8</title>
-   <link href="gizmo385.github.io/2014/04/28/introduction/"/>
+   <link href="gizmo385.github.io/2014/04/28/java-8/"/>
    <updated>2014-04-28T00:00:00-07:00</updated>
-   <id>gizmo385.github.io/2014/04/28/introduction</id>
+   <id>gizmo385.github.io/2014/04/28/java-8</id>
    <content type="html">&lt;p&gt;Java 8 was recently released by Oracle and included a large number of improvements and new features that are poised to have the biggest impact on the platform since the introduction of &lt;a href=&quot;http://docs.oracle.com/javase/tutorial/java/generics/&quot;&gt;generics&lt;/a&gt; in Java 5.&lt;/p&gt;
 
 &lt;h2&gt;When did this become a thing?&lt;/h2&gt;
