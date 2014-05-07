@@ -53,6 +53,12 @@ html {
  * out above content in mobile and later moves to the side with wider viewports.
  */
 
+.letterpress {
+    text-shadow: 0px 1px 1px #4d4d4d;
+    color: #222
+    font: 80px 'LeagueGothicRegular'
+}
+
 .sidebar {
   text-align: center;
   padding: 2rem 1rem;
