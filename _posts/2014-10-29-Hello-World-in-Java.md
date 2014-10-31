@@ -3,7 +3,7 @@ layout: post
 title: Hello World in Java
 ---
 
-The hello world program is something that every developer is familiar with, and for some, it was their first foray into computer programming. Well, I want to return to ground zero and dive head-first into rabbit hole to explain what that deceptively simple HelloWorld.java program is actually doing behind the scenes. To do this, we will be looking at the implementation of various features of the JVM, the JDK, and the Java Stadard Library. The source code for many of the classes present in the 1.8 version of the standard library, is viewable at [grepcode](http://grepcode.com/).
+The hello world program is something that every developer is familiar with, and for some, it was their first foray into computer programming. Well, I want to return to ground zero and dive head-first into the rabbit hole to explain what that deceptively simple HelloWorld.java program is actually doing behind the scenes. To do this, we will be looking at the implementation of various features of the JVM, the JDK, and the Java Standard Library. The source code for many of the classes present in the 1.8 version of the standard library, is viewable at [grepcode](http://grepcode.com/).
 
 To begin our journey, let's look at the source code for a bare bones hello world implementation in Java:
 
@@ -21,20 +21,20 @@ The first place to look would appear to be the [System](http://docs.oracle.com/j
 public final static PrintStream out = null;
 ```
 
-Wait a minute, what do you mean ```System.out``` is null? If ```System.out``` is null, how could I possibly call ```println``` without having Java fall apart and spit the ever-so-helpful NullPointerException? Well hold your horses and let's have a look. The System class is one of the first classes that is loaded by the JVM when it starts program execution, and when it is initialized the ```initializeSystemClass``` method is called. This method does many important things, including setting up System.out. The lines that properly initializes it is:
+Wait a minute, what do you mean ```System.out``` is null? If ```System.out``` is null, how could I possibly call ```println``` without having Java fall apart and spit out the ever-so-helpful NullPointerException? Well hold your horses and let's have a look. The System class is one of the first classes that is loaded by the JVM when it starts program execution, and when it is initialized the ```initializeSystemClass``` method is called. This method does many important things, including setting up System.out. The lines that properly initializes it is:
 
 ```java
 FileOutputStream fdOut = new FileOutputStream(FileDescriptor.out);
 setOut0(newPrintStream(fdOut,
     props.getProperty("sun.stdout.encoding")));
 ```
-The first thing that you might notice is that we're openning up a [FileOutputStream](http://docs.oracle.com/javase/8/docs/api/java/io/FileOutputStream.html). Why? Well, we're openning a FileOutputStream on a [FileDescriptor](http://docs.oracle.com/javase/8/docs/api/java/io/FileDescriptor.html). Because stdout is not handled in the same way on all platforms, Java created the FileDescriptor class, whose sole responsibility is to handle setting up the input and output file handles. After setting up a FileOutputStream for stdout, the ```setOut0``` method is called, which has the following signature:
+The first thing that you might notice is that we're opening up a [FileOutputStream](http://docs.oracle.com/javase/8/docs/api/java/io/FileOutputStream.html). Why? Well, we're opening a FileOutputStream on a [FileDescriptor](http://docs.oracle.com/javase/8/docs/api/java/io/FileDescriptor.html). Because stdout is not handled in the same way on all platforms, Java created the FileDescriptor class, whose sole responsibility is to handle setting up the input and output file handles. After setting up a FileOutputStream for stdout, the ```setOut0``` method is called, which has the following signature:
 
 ```java
 private static native void setOut0(PrintStream out);
 ```
 
-This is a Java native method, which means that its implementation is backed by native code defined using the JNI (Java Native Interface). As you delve deeper and deeper into the Java stadard library, you will come to discover that many of the base operations in the language ultimately fall down to native methods. This is especially true for file IO and operations that involve system calls. The standard template for a native method that will be executing C code looks something like this:
+This is a Java native method, which means that its implementation is backed by native code defined using the JNI (Java Native Interface). As you delve deeper and deeper into the Java standard library, you will come to discover that many of the base operations in the language ultimately fall down to native methods. This is especially true for file IO and operations that involve system calls. The standard template for a native method that will be executing C code looks something like this:
 
 ```C
 JNIEXPORT void JNICALL Java_ClassName_MethodName
@@ -125,7 +125,7 @@ public void write(char cbuf[], int off, int len)
         }
         if (len >= nChars) {
             /* If the request length exceeds the size of the output
-               buffer,flush the buffer and then write the data
+               buffer, flush the buffer and then write the data
                directly. In this way buffered streams will cascade
                harmlessly. */
             flushBuffer();
@@ -177,7 +177,7 @@ private void writeBytes() throws IOException {
 }
 ```
 
-There are two possible exits points for this method that we will be focusing on. The first calls the write function on a [WritableByteStream](http://docs.oracle.com/javase/8/docs/api/java/nio/channels/WritableByteChannel.html) whereas the second calls the write function on a FileOutputStream and passes it an array of bytes. However, we will be ignoring the first because at the time of writing this blog post, it is a disabled feature in the StreamEncoder as shown below:
+There are two possible exit points for this method that we will be focusing on. The first calls the write function on a [WritableByteStream](http://docs.oracle.com/javase/8/docs/api/java/nio/channels/WritableByteChannel.html) whereas the second calls the write function on a FileOutputStream and passes it an array of bytes. However, we will be ignoring the first because at the time of writing this blog post, it is a disabled feature in the StreamEncoder as shown below:
 
 ```java
 // This path disabled until direct buffers are faster
