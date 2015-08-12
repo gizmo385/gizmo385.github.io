@@ -49,8 +49,8 @@ depth (Node l r) = 1 + max (depth l) (depth r)
 ```
 
 As you can see, functions operating on ADTs become incredibly brief and easily expressible. While
-some of this is due to the conciseness and expressibility of Haskell, you'll see that we'll soon be
-able to define something very similar in Clojure.
+some of this is due to the conciseness of the language and how expressive it is, you'll see that
+we'll soon be able to define something very similar in Clojure.
 
 ### So how do they look in Clojure?
 
@@ -127,9 +127,9 @@ examine the `emit-constructor` function as that does a fair amount of the heavy 
 The first thing that this function does is ensure that the metadata and symbols are created. The
 metadata for these types consists of 2 fields:
 
-  1. The name of the adt that this value is constained in.
+  1. The name of the adt that this value is constrained in.
 
-  2. The particular subtype in the ADT that this is. This is assigned as the symbol for the
+  2. The particular sub-type in the ADT that this is. This is assigned as the symbol for the
      type-name which allows us to dispatch based on symbols like Empty and Leaf.
 
 After that, it creates a function which will be used to instantiate new instances of these types.
@@ -148,7 +148,7 @@ this implementation, including `adt-name`.
   (-> obj meta :adt-type))
 ```
 
-Both of these functions serve as metadata accessors for ADT subtypes and are helpful both for
+Both of these functions serve as metadata assessors for ADT sub-types and are helpful both for
 extracting information and as dispatch functions for multimethods.
 
 ### Conclusion
