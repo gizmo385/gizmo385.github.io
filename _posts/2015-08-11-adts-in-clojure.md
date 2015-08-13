@@ -161,3 +161,34 @@ available in my [LearningClojure](https://github.com/gizmo385/LearningClojure/) 
 
 As I noted in this post, my Haskell skills are particularly rusty, so if you find any syntax errors
 in this post, feel free to submit a pull request or message me and I will be happy to fix them.
+
+### Addendum
+
+While messing with the syntax over the past few days, I discovered that it is possible to get
+slightly closer to mimicing the Haskell syntax for defining an ADT. Before explaining the change,
+note that this is not meant to be practical! The implementation of this involves 2 steps:
+
+  1. Expect a second mandatory positional argument, an equals sign.
+
+  2. Partition the variable positional arguments by the | symbol and then filter out the lists that
+     only contain the vertical bar. This creates the right lists that will be emited as
+     constructors. The macro definition is as follows:
+
+```clojure
+(defmacro data
+  [adt-name equals-sign & constructors]
+  `(do
+     (defn ~(symbol (str adt-name "?")) [~'obj]
+       (= ~(str adt-name) (adt-name ~'obj)))
+     ~@(for [[type-name & fields]
+             (filter (partial not= '(|))
+                     (partition-by (partial = '|) constructors))]
+         (apply (partial emit-constructor adt-name type-name)
+                 fields))))
+```
+
+This allows you to define the tree from above like this:
+
+```clojure
+(data Tree = Empty | Leaf value | Node left right)
+```
