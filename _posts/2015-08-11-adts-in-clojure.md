@@ -1,6 +1,11 @@
 ---
 layout: post
 title: Algebraic Data Types & Clojure
+categories: [clojure, programming]
+tags: [functional, lisp, clojure, programming]
+description: Walking through implementing ADTs in Clojure
+comments: true
+fullview: true
 ---
 
 ### What are Algebraic Data Types?

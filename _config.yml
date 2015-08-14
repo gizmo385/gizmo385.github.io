@@ -1,25 +1,29 @@
-# Dependencies
-markdown:         redcarpet
-pygments:         true
+# visit https://github.com/mojombo/jekyll/wiki/Configuration for more settings
 
-# Permalinks
-permalink:        pretty
+paginate: 5 # pagination based on number of posts
+paginate_path: "page:num"
+exclude: ["README.md"] # files to exclude
+highlighter: pygments
+markdown: redcarpet
+disqus: cachapline8
+comments: true
 
-# Setup
-title:            Christopher Chapline
-tagline:          'Software Developer'
-description:      'Student of Computer Science at the University of Arizona'
-url:              gizmo385.github.io
+defaults:
+  -
+    scope:
+      path: "" # empty string for all files
+    values:
+      title: Christopher Chapline
 
+description: My adventures in development
 author:
-  name:           'Christopher Chapline'
-  url:            gizmo385.github.io
-  email:          cachapline8@gmail.com
+  name: Christopher Chapline
+  email: cachapline8@gmail.com
+  github: gizmo385
+  bio: Computer Science student at the University of Arizona
 
-paginate:         5
+rss_path: feed.xml
+categories_path: categories.html
+tags_path: tags.html
 
-# Custom vars
-version:          2.0.0
-
-github:
-  repo:           https://github.com/poole/hyde
+BASE_PATH:

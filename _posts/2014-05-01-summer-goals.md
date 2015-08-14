@@ -1,6 +1,10 @@
 ---
 layout: post
 title: Summer Projects
+tags: [projects, school, update]
+categories: [general]
+description: An update about what I'm doing
+fullview: true
 ---
 Like many other college students around the country, I'm going to be on summer break starting in a few weeks. Along with summer break comes more free time and more time to focus on personal projects. Due to this anticipated free time, I've decided that I want to look into starting and finishing a personal project from scratch that will be on a larger scale than the personal projects that I've previously worked on. My current idea is to write a parser for a language (one that I don't currently know) in that language.
 

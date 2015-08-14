@@ -1,6 +1,11 @@
 ---
 layout: post
 title: ORMs in Practical Applications
+categories: [programming, databases]
+tags: [databases, programming, orms]
+description: My thoughts on ORMs
+comments: true
+fullview: true
 ---
 
 I would first of all like to apologize for the lack of posts over the past few months. During the summer, I have been partaking in my first internship at a software development company in Tucson, [Elegant Thought](http://elegantthought.com/).

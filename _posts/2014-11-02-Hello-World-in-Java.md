@@ -1,6 +1,11 @@
 ---
 layout: post
 title: Hello World in Java
+categories: [java, programming, c]
+tags: [hello world, java]
+description: How Hello World actually works
+comments: true
+fullview: true
 ---
 
 The hello world program is something that every developer is familiar with, and for some, it was their first foray into computer programming. Well, I want to return to ground zero and dive head-first into the rabbit hole to explain what that deceptively simple HelloWorld.java program is actually doing behind the scenes. To do this, we will be looking at the implementation of various features of the JVM, the JDK, and the Java Stadard Library. The source code for many of the classes present in the 1.8 version of the standard library is viewable at [grepcode](http://grepcode.com/).

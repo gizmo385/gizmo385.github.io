@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>Algebraic Data Types & Clojure</title>
+	
+	<meta name="description" content="Walking through implementing ADTs in Clojure">
+	
+	<meta name="author" content="Christopher Chapline">
+
+	<!-- Enable responsive viewport -->
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+	<!-- Le HTML5 shim, for IE6-8 support of HTML elements -->
+	<!--[if lt IE 9]>
+	<script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+	<![endif]-->
+
+	<!-- Le styles -->
+	<link href="/assets/resources/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+	<link href="/assets/resources/font-awesome/css/font-awesome.min.css" rel="stylesheet">
+	<link href="/assets/resources/syntax/syntax.css" rel="stylesheet">
+	<link href="/assets/css/style.css" rel="stylesheet">
+
+	<!-- Le fav and touch icons -->
+	<!-- Update these with your own images
+	<link rel="shortcut icon" href="images/favicon.ico">
+	<link rel="apple-touch-icon" href="images/apple-touch-icon.png">
+	<link rel="apple-touch-icon" sizes="72x72" href="images/apple-touch-icon-72x72.png">
+	<link rel="apple-touch-icon" sizes="114x114" href="images/apple-touch-icon-114x114.png">
+	-->
+
+	<link rel="alternate" type="application/rss+xml" title="" href="/feed.xml">
+</head>
+
+<body>
+	<nav class="navbar navbar-default visible-xs" role="navigation">
+		<!-- Brand and toggle get grouped for better mobile display -->
+		<div class="navbar-header">
+			<button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+				<span class="sr-only">Toggle navigation</span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+			</button>
+			
+			<a type="button" class="navbar-toggle nav-link" href="http://github.com/gizmo385">
+				<i class="fa fa-github"></i>
+			</a>
+			
+			
+			
+			<a type="button" class="navbar-toggle nav-link" href="mailto:cachapline8@gmail.com">
+				<i class="fa fa-envelope"></i>
+			</a>
+			
+			<a class="navbar-brand" href="/">
+				<img src="http://www.gravatar.com/avatar/?s=35" class="img-circle" />
+				
+			</a>
+		</div>
+
+		<!-- Collect the nav links, forms, and other content for toggling -->
+		<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+			<ul class="nav navbar-nav">
+				<li class="active"><a href="/">Home</a></li>
+				<li><a href="/categories.html">Categories</a></li>
+				<li><a href="/tags.html">Tags</a></li>
+			</ul>
+		</div><!-- /.navbar-collapse -->
+	</nav>
+
+	<!-- nav-menu-dropdown -->
+	<div class="btn-group hidden-xs" id="nav-menu">
+		<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+			<i class="fa fa-bars"></i>
+		</button>
+		<ul class="dropdown-menu" role="menu">
+			<li><a href="/"><i class="fa fa-home"></i>Home</a></li>
+			<li><a href="/categories.html"><i class="fa fa-folder"></i>Categories</a></li>
+			<li><a href="/tags.html"><i class="fa fa-tags"></i>Tags</a></li>
+			<li class="divider"></li>
+			<li><a href="#"><i class="fa fa-arrow-up"></i>Top of Page</a></li>
+		</ul>
+	</div>
+
+	<div class="col-sm-3 sidebar hidden-xs">
+		<!-- sidebar.html -->
+<header class="sidebar-header" role="banner">
+	<a href="/">
+		<img src="http://www.gravatar.com/avatar/?s=150" class="img-circle" />
+	</a>
+	<h3 class="title">
+        <a href="/"></a>
+    </h3>
+</header>
+
+
+<div id="bio" class="text-center">
+	Computer Science student at the University of Arizona
+</div>
+
+
+<div id="contact-list" class="text-center">
+	<ul class="list-unstyled list-inline">
+		
+		<li>
+			<a class="btn btn-default btn-sm" href="https://github.com/gizmo385">
+				<i class="fa fa-github-alt fa-lg"></i>
+			</a>
+		</li>
+		
+		
+		
+		<li>
+			<a class="btn btn-default btn-sm" href="mailto:cachapline8@gmail.com">
+				<i class="fa fa-envelope fa-lg"></i>
+			</a>
+		</li>
+		
+	</ul>
+	<ul id="contact-list-secondary" class="list-unstyled list-inline">
+		
+		
+		<li>
+			<a class="btn btn-default btn-sm" href="/feed.xml">
+				<i class="fa fa-rss fa-lg"></i>
+			</a>
+		</li>
+	</ul>
+</div>
+<!-- sidebar.html end -->
+
+	</div>
+
+	<div class="col-sm-9 col-sm-offset-3">
+		<div class="page-header">
+  <h1>Algebraic Data Types & Clojure </h1>
+</div>
+	
+<article>
+
+	<div class="col-sm-10">
+	 <span class="post-date">
+	   
+	   August 
+	   11th,
+	   
+	   2015
+	 </span>
+	  <div class="article_body">
+	  <h3>What are Algebraic Data Types?</h3>
+
+<p><a href="http://wikipedia.org/en/Algebraic_data_type">Algebraic data types</a> (ADTs) are a feature present
+in many functional programming languages, such as
+<a href="http://wikipedia.org/en/Haskell_(programming_language)">Haskell</a> and
+<a href="http://wikipedia.org/en/Scala_(programming_language)">Scala</a>. ADTs allow you to define a type by
+defining the different forms that type can take. For example, you could express a binary tree by
+saying that it falls under one of 3 categories:</p>
+
+<ol>
+<li><p>An empty node.</p></li>
+<li><p>A leaf node, containing only a value.</p></li>
+<li><p>A tree node, containing 2 children (left and right).</p></li>
+</ol>
+
+<p>Definitions like these make it easy to create functions which operate on the ADT by specifying the
+behavior that should be followed based on the different values that type can take. Before we define
+our syntax, let&#39;s first examine how ADTs are used in other languages.</p>
+
+<h3>ADTs in Haskell</h3>
+
+<p>Haskell is generally the poster child for functional programming languages and as such I&#39;m going to
+leverage it for these examples. It should be noted however that my Haskell skills are somewhat
+limited so I will be basing this example off of code found on Wikipedia. Let&#39;s look at one way we
+might define the above tree example using ADTs in Haskell:</p>
+<div class="highlight"><pre><code class="language-haskell" data-lang="haskell"><span class="kr">data</span> <span class="kt">Tree</span> <span class="n">a</span> <span class="ow">=</span> <span class="kt">Empty</span>
+            <span class="o">|</span> <span class="kt">Leaf</span> <span class="n">a</span>
+            <span class="o">|</span> <span class="kt">Node</span> <span class="kt">Tree</span> <span class="kt">Tree</span>
+</code></pre></div>
+<p>The above example is precisely why ADTs are incredibly handy - they read like plain English. It
+becomes incredibly simple to understand the full range of possibilities for a type. It also makes it
+incredibly intuitive to define operations based upon the different values your type might take. As
+an example, I am going to use the definition of a function to calculate the depth of a tree as
+described on Wikipedia:</p>
+<div class="highlight"><pre><code class="language-haskell" data-lang="haskell"><span class="nf">depth</span> <span class="ow">::</span> <span class="kt">Tree</span> <span class="ow">-&gt;</span> <span class="kt">Int</span>
+<span class="nf">depth</span> <span class="kt">Empty</span> <span class="ow">=</span> <span class="mi">0</span>
+<span class="nf">depth</span> <span class="p">(</span><span class="kt">Leaf</span> <span class="n">n</span><span class="p">)</span> <span class="ow">=</span> <span class="mi">1</span>
+<span class="nf">depth</span> <span class="p">(</span><span class="kt">Node</span> <span class="n">l</span> <span class="n">r</span><span class="p">)</span> <span class="ow">=</span> <span class="mi">1</span> <span class="o">+</span> <span class="n">max</span> <span class="p">(</span><span class="n">depth</span> <span class="n">l</span><span class="p">)</span> <span class="p">(</span><span class="n">depth</span> <span class="n">r</span><span class="p">)</span>
+</code></pre></div>
+<p>As you can see, functions operating on ADTs become incredibly brief and easily expressible. While
+some of this is due to the conciseness of the language and how expressive it is, you&#39;ll see that
+we&#39;ll soon be able to define something very similar in Clojure.</p>
+
+<h3>So how do they look in Clojure?</h3>
+
+<p>The syntax that this ADT implementation will use will look like this:</p>
+<div class="highlight"><pre><code class="language-clojure" data-lang="clojure"><span class="p">(</span><span class="nf">defadt</span> <span class="nv">Tree</span>
+  <span class="p">(</span><span class="nf">Empty</span><span class="p">)</span>
+  <span class="p">(</span><span class="nf">Leaf</span> <span class="nv">value</span><span class="p">)</span>
+  <span class="p">(</span><span class="nf">Node</span> <span class="nb">left </span><span class="nv">right</span><span class="p">))</span>
+</code></pre></div>
+<p>This syntax is incredibly similar to the Haskell code. We will also see that we can define the depth
+function described above like so:</p>
+<div class="highlight"><pre><code class="language-clojure" data-lang="clojure"><span class="p">(</span><span class="kd">defmulti </span><span class="nv">depth</span> <span class="nv">adt-type</span><span class="p">)</span>
+<span class="p">(</span><span class="kd">defmethod </span><span class="nv">depth</span> <span class="nv">Empty</span> <span class="p">[</span><span class="nv">_</span><span class="p">]</span> <span class="mi">0</span><span class="p">)</span>
+<span class="p">(</span><span class="kd">defmethod </span><span class="nv">depth</span> <span class="nv">Leaf</span> <span class="p">[</span><span class="nv">_</span><span class="p">]</span> <span class="mi">1</span><span class="p">)</span>
+<span class="p">(</span><span class="kd">defmethod </span><span class="nv">depth</span> <span class="nv">Node</span> <span class="p">[</span><span class="nv">node</span><span class="p">]</span>
+  <span class="p">(</span><span class="nb">+ </span><span class="mi">1</span> <span class="p">(</span><span class="nb">max </span><span class="p">(</span><span class="nf">depth</span> <span class="p">(</span><span class="nb">node </span><span class="ss">:left</span><span class="p">))</span> <span class="p">(</span><span class="nf">depth</span> <span class="p">(</span><span class="nb">node </span><span class="ss">:right</span><span class="p">)))))</span>
+<span class="p">(</span><span class="kd">defmethod </span><span class="nv">depth</span> <span class="ss">:default</span> <span class="p">[</span><span class="nv">_</span><span class="p">]</span> <span class="mi">0</span><span class="p">)</span>
+</code></pre></div>
+<p>Once again, like the example above, it becomes extremely easy to read this function and to
+understand what it is doing.</p>
+
+<h3>Implementation</h3>
+
+<p>Alright, enough talk. Let&#39;s get down to the brass tacks and actually implement this. The actual
+types will be represented as maps with the proper metadata attached to them. We will then define
+functions that allow for us to easily interact with our types. First, let&#39;s define our
+<code>defadt</code> macro:</p>
+<div class="highlight"><pre><code class="language-clojure" data-lang="clojure"><span class="p">(</span><span class="kd">defmacro </span><span class="nv">defadt</span> <span class="p">[</span><span class="nv">adt-name</span> <span class="o">&amp;</span> <span class="nv">constructors</span><span class="p">]</span>
+  <span class="o">`</span><span class="p">(</span><span class="nf">do</span>
+     <span class="c1">; Define our test function</span>
+     <span class="p">(</span><span class="kd">defn </span><span class="o">~</span><span class="p">(</span><span class="nb">symbol </span><span class="p">(</span><span class="nb">str </span><span class="nv">adt-name</span> <span class="s">&quot;?&quot;</span><span class="p">))</span> <span class="p">[</span><span class="o">~</span><span class="ss">&#39;obj</span><span class="p">]</span>
+       <span class="p">(</span><span class="nb">= </span><span class="o">~</span><span class="p">(</span><span class="nb">str </span><span class="nv">adt-name</span><span class="p">)</span> <span class="p">(</span><span class="nf">adt-name</span> <span class="o">~</span><span class="ss">&#39;obj</span><span class="p">)))</span>
+     <span class="c1">; Create our type constructors</span>
+     <span class="o">~@</span><span class="p">(</span><span class="nb">for </span><span class="p">[[</span><span class="nv">type-name</span> <span class="o">&amp;</span> <span class="nv">fields</span><span class="p">]</span> <span class="nv">constructors</span><span class="p">]</span>
+         <span class="p">(</span><span class="nb">apply </span><span class="p">(</span><span class="nb">partial </span><span class="nv">emit-constructor</span> <span class="nv">adt-name</span> <span class="nv">type-name</span><span class="p">)</span>
+                 <span class="nv">fields</span><span class="p">))))</span>
+</code></pre></div>
+<p>This macro does two things:</p>
+
+<ol>
+<li><p>It defines a test function which will check if a given object is a part of the defined ADT. So
+ for the tree ADT defined above, a function <code>Tree?</code> would be generated by this macro.</p></li>
+<li><p>Creates the constructor for each case of the ADT. In the case of the tree ADT, 3 functions
+ would be defined: <code>Empty</code>, <code>Leaf</code>, and <code>Node</code>.</p></li>
+</ol>
+
+<p>There are a couple problems with this macro however - most notably is that it isn&#39;t complete. It
+references 2 functions, <code>adt-name</code> and <code>emit-constructor</code>, which we have yet to implement. Let&#39;s
+examine the <code>emit-constructor</code> function as that does a fair amount of the heavy lifting:</p>
+<div class="highlight"><pre><code class="language-clojure" data-lang="clojure"><span class="p">(</span><span class="kd">defn- </span><span class="nv">emit-constructor</span> <span class="p">[</span><span class="nv">adt-name</span> <span class="nv">type-name</span> <span class="o">&amp;</span> <span class="nv">fields</span><span class="p">]</span>
+  <span class="p">(</span><span class="k">let </span><span class="p">[</span><span class="nv">type-name#</span> <span class="p">(</span><span class="nb">symbol </span><span class="nv">type-name</span><span class="p">)</span>
+        <span class="nv">metadata</span> <span class="p">{</span><span class="ss">:adt</span> <span class="p">(</span><span class="nb">str </span><span class="nv">adt-name</span><span class="p">)</span> <span class="ss">:adt-type</span> <span class="nv">type-name#</span><span class="p">}]</span>
+    <span class="p">(</span><span class="k">if </span><span class="p">(</span><span class="nf">empty?</span> <span class="nv">fields</span><span class="p">)</span>
+      <span class="c1">; Can&#39;t create an empty struct, so create map instead</span>
+      <span class="o">`</span><span class="p">(</span><span class="kd">defn </span><span class="o">~</span><span class="nv">type-name#</span> <span class="p">[]</span> <span class="p">(</span><span class="nb">with-meta </span><span class="p">{}</span> <span class="o">~</span><span class="nv">metadata</span><span class="p">))</span>
+
+      <span class="c1">; Define a struct to collect arguments into</span>
+      <span class="o">`</span><span class="p">(</span><span class="kd">defn </span><span class="o">~</span><span class="nv">type-name#</span> <span class="p">[</span><span class="o">~@</span><span class="nv">fields</span><span class="p">]</span>
+         <span class="p">(</span><span class="nf">with-meta</span>
+           <span class="p">(</span><span class="nb">struct </span><span class="p">(</span><span class="nb">create-struct </span><span class="o">~@</span><span class="p">(</span><span class="nb">map keyword </span><span class="nv">fields</span><span class="p">))</span> <span class="o">~@</span><span class="nv">fields</span><span class="p">)</span>
+           <span class="o">~</span><span class="nv">metadata</span><span class="p">)))))</span>
+</code></pre></div>
+<p>The first thing that this function does is ensure that the metadata and symbols are created. The
+metadata for these types consists of 2 fields:</p>
+
+<ol>
+<li><p>The name of the adt that this value is constrained in.</p></li>
+<li><p>The particular sub-type in the ADT that this is. This is assigned as the symbol for the
+ type-name which allows us to dispatch based on symbols like Empty and Leaf.</p></li>
+</ol>
+
+<p>After that, it creates a function which will be used to instantiate new instances of these types.
+A distinction is made between types which have arguments and those which do not. Empty types are
+defined as empty maps with metadata whereas types with arguments are created as structs. Now that we
+have actually created our ADT implementation, let&#39;s begin looking at the utility functions used by
+this implementation, including <code>adt-name</code>.</p>
+<div class="highlight"><pre><code class="language-clojure" data-lang="clojure"><span class="p">(</span><span class="kd">defn </span><span class="nv">adt-name</span>
+  <span class="p">[</span><span class="nv">obj</span><span class="p">]</span>
+  <span class="p">(</span><span class="nb">-&gt; </span><span class="nv">obj</span> <span class="nb">meta </span><span class="ss">:adt</span><span class="p">))</span>
+
+<span class="p">(</span><span class="kd">defn </span><span class="nv">adt-type</span>
+  <span class="p">[</span><span class="nv">obj</span><span class="p">]</span>
+  <span class="p">(</span><span class="nb">-&gt; </span><span class="nv">obj</span> <span class="nb">meta </span><span class="ss">:adt-type</span><span class="p">))</span>
+</code></pre></div>
+<p>Both of these functions serve as metadata assessors for ADT sub-types and are helpful both for
+extracting information and as dispatch functions for multimethods.</p>
+
+<h3>Conclusion</h3>
+
+<p>ADTs provide an interesting way of defining types in a system and allow for incredibly concise
+function definitions. They&#39;re also just really fun to implement and provide an interesting example
+of what is possible with macros using a relatively small amount of code. The code from this post is
+available in my <a href="https://github.com/gizmo385/LearningClojure/">LearningClojure</a> repository
+<a href="https://github.com/gizmo385/LearningClojure/blob/master/adt/src/adt/core.clj">here</a>.</p>
+
+<p>As I noted in this post, my Haskell skills are particularly rusty, so if you find any syntax errors
+in this post, feel free to submit a pull request or message me and I will be happy to fix them.</p>
+
+<h3>Addendum</h3>
+
+<p>While messing with the syntax over the past few days, I discovered that it is possible to get
+slightly closer to mimicing the Haskell syntax for defining an ADT. Before explaining the change,
+note that this is not meant to be practical! The implementation of this involves 2 steps:</p>
+
+<ol>
+<li><p>Expect a second mandatory positional argument, an equals sign.</p></li>
+<li><p>Partition the variable positional arguments by the | symbol and then filter out the lists that
+ only contain the vertical bar. This creates the right lists that will be emited as
+ constructors. The macro definition is as follows:</p></li>
+</ol>
+<div class="highlight"><pre><code class="language-clojure" data-lang="clojure"><span class="p">(</span><span class="kd">defmacro </span><span class="nv">data</span>
+  <span class="p">[</span><span class="nv">adt-name</span> <span class="nv">equals-sign</span> <span class="o">&amp;</span> <span class="nv">constructors</span><span class="p">]</span>
+  <span class="o">`</span><span class="p">(</span><span class="nf">do</span>
+     <span class="p">(</span><span class="kd">defn </span><span class="o">~</span><span class="p">(</span><span class="nb">symbol </span><span class="p">(</span><span class="nb">str </span><span class="nv">adt-name</span> <span class="s">&quot;?&quot;</span><span class="p">))</span> <span class="p">[</span><span class="o">~</span><span class="ss">&#39;obj</span><span class="p">]</span>
+       <span class="p">(</span><span class="nb">= </span><span class="o">~</span><span class="p">(</span><span class="nb">str </span><span class="nv">adt-name</span><span class="p">)</span> <span class="p">(</span><span class="nf">adt-name</span> <span class="o">~</span><span class="ss">&#39;obj</span><span class="p">)))</span>
+     <span class="o">~@</span><span class="p">(</span><span class="nb">for </span><span class="p">[[</span><span class="nv">type-name</span> <span class="o">&amp;</span> <span class="nv">fields</span><span class="p">]</span>
+             <span class="p">(</span><span class="nb">filter </span><span class="p">(</span><span class="nb">partial not= </span><span class="o">&#39;</span><span class="p">(</span><span class="err">|</span><span class="p">))</span>
+                     <span class="p">(</span><span class="nf">partition-by</span> <span class="p">(</span><span class="nb">partial = </span><span class="o">&#39;</span><span class="err">|</span><span class="p">)</span> <span class="nv">constructors</span><span class="p">))]</span>
+         <span class="p">(</span><span class="nb">apply </span><span class="p">(</span><span class="nb">partial </span><span class="nv">emit-constructor</span> <span class="nv">adt-name</span> <span class="nv">type-name</span><span class="p">)</span>
+                 <span class="nv">fields</span><span class="p">))))</span>
+</code></pre></div>
+<p>This allows you to define the tree from above like this:</p>
+<div class="highlight"><pre><code class="language-clojure" data-lang="clojure"><span class="p">(</span><span class="nf">data</span> <span class="nv">Tree</span> <span class="nb">= </span><span class="nv">Empty</span> <span class="err">|</span> <span class="nv">Leaf</span> <span class="nv">value</span> <span class="err">|</span> <span class="nv">Node</span> <span class="nb">left </span><span class="nv">right</span><span class="p">)</span>
+</code></pre></div>
+	  </div>
+
+		
+		<ul class="tag_box list-unstyled list-inline">
+		  <li><i class="fa fa-folder-open"></i></li>
+		  
+		  
+			 
+				<li><a href="/categories.html#clojure-ref">
+					clojure <span>(1)</span>
+					,
+				</a></li>
+			 
+				<li><a href="/categories.html#programming-ref">
+					programming <span>(5)</span>
+					
+				</a></li>
+			
+		  
+		</ul>
+		  
+
+		
+		<ul class="list-inline">
+		  <li><i class="fa fa-tags"></i></li>
+		  
+		  
+			 
+				<li>
+					<a href="/tags.html#functional-ref">
+					functional <span>(2)</span>
+					,
+					</a>
+				</li>
+			 
+				<li>
+					<a href="/tags.html#lisp-ref">
+					lisp <span>(2)</span>
+					,
+					</a>
+				</li>
+			 
+				<li>
+					<a href="/tags.html#clojure-ref">
+					clojure <span>(2)</span>
+					,
+					</a>
+				</li>
+			 
+				<li>
+					<a href="/tags.html#programming-ref">
+					programming <span>(3)</span>
+					
+					</a>
+				</li>
+			
+		  
+		  
+		</ul>
+		  
+
+		<hr>
+
+		<div>
+      <section class="share col-sm-6">
+        <h4 class="section-title">Share Post</h4>
+        <a class="btn btn-default btn-sm twitter" href="http://twitter.com/share?text=Algebraic Data Types & Clojure"
+           onclick="window.open(this.href, 'twitter-share', 'width=550,height=235');return false;">
+          <i class="fa fa-twitter fa-lg"></i>
+          Twitter
+        </a>
+        <a class="btn btn-default btn-sm facebook" href="https://www.facebook.com/sharer/sharer.php"
+           onclick="window.open(this.href, 'facebook-share','width=580,height=296');return false;">
+          <i class="fa fa-facebook fa-lg"></i>
+          Facebook
+        </a>
+        <a class="btn btn-default btn-sm gplus"
+           onclick="window.open('https://plus.google.com/share?url='+window.location.href, 'google-plus-share', 'width=490,height=530');return false;">
+          <i class="fa fa-google-plus fa-lg"></i>
+          Google+
+        </a>
+      </section>
+
+      <section class="col-sm-6 author">
+        <img src="http://www.gravatar.com/avatar/" class="img-rounded author-image" />
+        <h4 class="section-title author-name">Christopher Chapline</h4>
+        <p class="author-bio">Computer Science student at the University of Arizona</p>
+      </section>
+    </div>
+
+    <div class="clearfix"></div>
+
+		<ul class="pager">
+		  
+		  <li class="previous"><a href="/general/talks/programming/2015/08/01/using-vim.html" title="Sticking with Vim">&larr; Previous</a></li>
+		  
+		  
+			<li class="next disabled"><a>Next &rarr;</a>
+		  
+		</ul>
+
+		<hr>
+	</div>
+	
+	<div class="col-sm-2 sidebar-2">
+	
+	</div>
+</article>
+<div class="clearfix"></div>
+
+
+
+    
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+    /* * * CONFIGURATION VARIABLES * * */
+    var disqus_shortname = 'cachapline8';
+
+    /* * * DON'T EDIT BELOW THIS LINE * * */
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript" rel="nofollow">comments powered by Disqus.</a></noscript>
+
+
+
+
+
+		<footer>
+			<hr/>
+			<p>
+				&copy; 2015 Christopher Chapline with Jekyll. Theme: <a href="https://github.com/dbtek/dbyll">dbyll</a> by dbtek.
+			</p>
+		</footer>
+	</div>
+
+	<script type="text/javascript" src="/assets/resources/jquery/jquery.min.js"></script>
+	<script type="text/javascript" src="/assets/resources/bootstrap/js/bootstrap.min.js"></script>
+	<script type="text/javascript" src="/assets/js/app.js"></script>
+</body>
+</html>
+
+
+
