@@ -7,6 +7,7 @@ highlighter: pygments
 markdown: redcarpet
 disqus: cachapline8
 comments: true
+google_analytics: gizmo385
 
 defaults:
   -
