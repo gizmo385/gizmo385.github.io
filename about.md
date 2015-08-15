@@ -1,9 +1,11 @@
 ---
 layout: page
-title: About
+title: About Me
 ---
 
-Hello, Internet! My name is Christopher Chapline and this is my blog! I'm currently a Senior
+<img src="me.jpg" class="my_pic" />
+
+Hello, Internet! My name is Chris and this is my blog! I'm currently a Senior
 studying computer science at the University of Arizona. My interests are in programming languages,
 software development, and how different language paradigms can be used to express solutions to
 problems that might otherwise be difficult.
