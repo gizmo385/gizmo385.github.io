@@ -3,7 +3,9 @@ layout: page
 title: About Me
 ---
 
-<img src="Me.jpg" class="my_pic" />
+<a href="./">
+  <img src="Me.jpg" class="my_pic" />
+</a>
 
 Hello, Internet! My name is Chris and this is my blog! I'm currently a Senior
 studying computer science at the University of Arizona. My interests are in programming languages,
