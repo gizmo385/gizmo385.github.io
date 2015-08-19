@@ -4,7 +4,7 @@ title: About Me
 ---
 
 <a href="./">
-  <img src="Me.jpg" class="my_pic" />
+  <img src="/public/me.jpg" class="my_pic" />
 </a>
 
 Hello, Internet! My name is Chris and this is my blog! I'm currently a Senior
