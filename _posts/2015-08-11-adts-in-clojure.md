@@ -30,8 +30,7 @@ our syntax, let's first examine how ADTs are used in other languages.
 ### ADTs in Haskell
 
 Haskell is generally the poster child for functional programming languages and as such I'm going to
-leverage it for these examples. It should be noted however that my Haskell skills are somewhat
-limited so I will be basing this example off of code found on Wikipedia. Let's look at one way we
+leverage it for these examples. Let's look at one way we
 might define the above tree example using ADTs in Haskell:
 
 ```haskell
@@ -43,8 +42,8 @@ data Tree a = Empty
 The above example is precisely why ADTs are incredibly handy - they read like plain English. It
 becomes incredibly simple to understand the full range of possibilities for a type. It also makes it
 incredibly intuitive to define operations based upon the different values your type might take. As
-an example, I am going to use the definition of a function to calculate the depth of a tree as
-described on Wikipedia:
+an example, let's examine how you might define a function to calculate the depth of the tree we
+defined above.
 
 ```haskell
 depth :: Tree -> Int
@@ -163,9 +162,6 @@ function definitions. They're also just really fun to implement and provide an i
 of what is possible with macros using a relatively small amount of code. The code from this post is
 available in my [LearningClojure](https://github.com/gizmo385/LearningClojure/) repository
 [here](https://github.com/gizmo385/LearningClojure/blob/master/adt/src/adt/core.clj).
-
-As I noted in this post, my Haskell skills are particularly rusty, so if you find any syntax errors
-in this post, feel free to submit a pull request or message me and I will be happy to fix them.
 
 ### Addendum
 
