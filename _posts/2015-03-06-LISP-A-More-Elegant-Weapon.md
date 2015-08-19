@@ -1,6 +1,6 @@
 ---
 layout: post
-title: LISP: A More Elegant Weapon
+title: LISP - A More Elegant Weapon
 categories: [general, talks, programming]
 tags: [acm, talks, lisp, clojure]
 comments: true
