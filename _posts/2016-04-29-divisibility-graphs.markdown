@@ -221,6 +221,9 @@ Overall, examining this simple problem allows us to see how expressive Clojure i
 are able to epxress many complex structures in terms of simple lists and maps, which Clojure handles
 easily. It's also a bit of good fun to dig through these and make some interesting visualizations!
 
+The full source code for everything here, along with some examples, is available
+[here](https://github.com/gizmo385/LearningClojure/blob/master/other/src/other/core.clj).
+
 As a small note, I would like to apologize for not posting as much on this blog. I had started
 initially working on this post in November, but never got around to publishing it. I have a couple
 of other blog posts that I would like to write over the next couple of weeks and put on the site.
