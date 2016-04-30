@@ -168,11 +168,11 @@ generate Loom graphs:
   [n]
   (let [zero-transitions (map (fn [i] [i (mod (* 2 i) n)])       (range n))
         one-transitions  (map (fn [i] [i (mod (inc (* 2 i)) n)]) (range n))]
-    (as-> (digraph) g
-      (apply add-edges g zero-transitions)
-      (apply add-edges g one-transitions)
-      (add-attr-to-edges g :label 0 zero-transitions)
-      (add-attr-to-edges g :label 1 one-transitions))))
+    (as-> (loom.graph/digraph) g
+      (apply loom.graph/add-edges g zero-transitions)
+      (apply loom.graph/add-edges g one-transitions)
+      (loom.attr/add-attr-to-edges g :label 0 zero-transitions)
+      (loom.attr/add-attr-to-edges g :label 1 one-transitions))))
 ```
 
 There's a lot going on in this function, so let's break it down.
@@ -183,3 +183,40 @@ There's a lot going on in this function, so let's break it down.
 
 * After defining our edges, we can create a directed graph and then add the edges. We also add
   labels to our edges. The reason for this will be made clear in a moment.
+
+Now that we have an actual digraph, what can we do with it? We've already expressed divisibility and
+the modulus operation in terms of our divisibility map, so what bonuses does this graph
+representation afford us? Well luckily, Loom is able to output the graph in a
+[Graphviz](http://www.graphviz.org/) format and generate an image of our graph!
+
+Let's consider the divisibility graph of 5 once again:
+
+```clojure
+user=> (divisibility-graph 5) ; A raw call to our divisibility-graph function
+{:nodeset #{0 1 4 3 2},
+ :adj {0 #{0 1}, 1 #{3 2}, 2 #{0 4}, 3 #{1 2}, 4 #{4 3}},
+ :in {0 #{0 2}, 2 #{1 3}, 4 #{4 2}, 1 #{0 3}, 3 #{1 4}},
+ :attrs
+ {0 {:loom.attr/edge-attrs {0 {:label 0}, 1 {:label 1}}},
+  1 {:loom.attr/edge-attrs {2 {:label 0}, 3 {:label 1}}},
+  2 {:loom.attr/edge-attrs {4 {:label 0}, 0 {:label 1}}},
+  3 {:loom.attr/edge-attrs {1 {:label 0}, 2 {:label 1}}},
+  4 {:loom.attr/edge-attrs {3 {:label 0}, 4 {:label 1}}}}}
+user=> (view (divisibility-graph 5)) ; This should make the image of the graph appear
+```
+
+The second command should generate something similar to the following:
+
+![Our generated divisibility graph of 5](/public/images/DivisibilityGraph5.png "Divisibility graph of 5"){:height="300px"}
+
+We can readily generate these for even large numbers! For example, here is the divisibility graph of
+50. If you would like to give it more attention, click on the image for the full resolution.
+
+[![Divisibility graph of
+50](/public/images/DivisibilityGraph50.png "It's a bit hard to read!"){:height="500px"}](/public/images/DivisibilityGraph50.png)
+
+## Conclusion
+
+Overall, examining this simple problem allows us to see how expressive Clojure is as a language. We
+are able to epxress many complex structures in terms of simple lists and maps, which Clojure handles
+easily. It's also a bit of good fun to dig through these and make some interesting visualizations!
