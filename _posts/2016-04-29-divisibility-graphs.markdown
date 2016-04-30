@@ -27,7 +27,7 @@ returning to the start state, then the number is divisible by 7. We will conside
 of these graphs and create a representation in Clojure using the graph library
 [Loom](https://github.com/aysylu/loom).
 
-## Breaking down the problem
+## The Problem
 
 First of all, let's simplify this a little bit. For the sake of conciseness, we will be restricting
 our divisibility graphs to base-2 integer. Realistically, this is not much of a restriction, since
@@ -49,7 +49,7 @@ Taken all together, these observations lead us to discover that the divisibility
 \\(n\\) is simply an \\(n\\) state finite state machine whose start state and final state are the
 same with state transitions on a 0 or a 1.
 
-## Creating our "Graph"
+## Divisibility Maps
 
 Thus far we've described these solely as graphs, but as a first step maps should do a pretty good
 job of modeling this system. We know that we need \\(n\\) "nodes", numbered \\(0 \cdots (n - 1)\\),
@@ -71,7 +71,8 @@ The function \\(T(n, b)\\) represents the transition out of the state labeled \\
 \\(b\\) where \\(b \in \\{0, 1\\}\\). The justification relies on how a number is encoded as a bit
 string. When an additional zero is added to the end of a bit string, it has the effect of doubling
 the value (consider 01 vs 010). Conversely, when a 1 is added to the end of a bit string, it has
-the effect of doubling the value and adding 1 to it (consider 01 vs 011).
+the effect of doubling the value and adding 1 to it (consider 01 vs 011). It should be noted that
+the inclusion of the \\(\bmod\\) operator is to protect against wrap around.
 
 This function allows us to define our graph as a map where the keys are the node labels, and the
 values are 2 entry maps which define the transitions based on the results of \\(T(n, b)\\). So how
@@ -88,8 +89,8 @@ might that look in Clojure?
        1 (mod (inc (* 2 i)) n)})))
 ```
 
-Wait... that's it? That encapsulates our graph? Yep! Let's look at the result of creating
-a divisibility map for the number 5:
+And that defines our entire map? Yep! Let's look at the result of creating a divisibility map for
+the number 5:
 
 ```clojure
 user=> (divisibility-map 5)
@@ -100,5 +101,85 @@ user=> (divisibility-map 5)
  4 {0 3, 1 4}}
 ```
 
-It should be noted that the modulus operators both in the original function \\(T\\) and in the
-Clojure code are to protect against wrap around.
+Now that we have this map, we can investigate traversing it to determine if a number is divisible by
+\\(n\\).
+
+## Defining Divisibility
+
+We will be expressing divisibility in terms of modulus, so to do that, we need to figure out how we
+can effectively express modulus in this scheme.
+
+1. To determine if some integer \\(k\\) is divisible by \\(n\\), we need to convert \\(k\\) to its
+   binary representation. We can do this with `Integer/toBinaryString`, documented
+   [here](https://docs.oracle.com/javase/8/docs/api/java/lang/Integer.html#toBinaryString-int-).
+
+2. Once we've converted it to a bit string, we need to retrieve each individual bit as an integer.
+   For the sake of simplicity and clarity, we can do through use of `map`, `str`, and
+   `Integer/parseInt`.
+
+3. Lastly, once we have a list of the bits in the bit string, we need to figure out some way to
+   encapsulate our state transitions and return our result. This can be easily expressed as
+   a [reduction](https://clojuredocs.org/clojure.core/reduce).
+
+```clojure
+(defn modulus
+  "Returns the result of taking k mod n. The argument n should be a divisibility map."
+  [k n]
+  (let [bits (map (fn [i] (Integer/parseInt (str i))) (Integer/toBinaryString k))]
+    (reduce (fn [state bit] (get (get n state) bit)) 0 bits)))
+```
+
+The binding in the `let` statement performs the first two steps above. After we have the list of
+bits, we can then reduce the list by keying into our divisibility map with our current state and the
+current bit. The result of this reduction will be the last returned state in the reduction. For
+example:
+
+```clojure
+user=> (modulus 25 (divisibility-map 5))
+0
+user=> (modulus 27 (divisibility-map 5))
+2
+user=> (modulus 325 (divisibility-map 7)) ; Verify this one on your own
+3
+```
+
+Now that we have something that can effectively compute \\(k \bmod n\\), our divisibility predicate
+should follow naturally:
+
+```clojure
+(defn divisible?
+  "Returns whether or not the integer k is divisible by the integer n"
+  [k n]
+  (zero? (modulus k (divisibility-map n))))
+```
+
+So now that we've explored this problem and can easily generate these divisibility maps, let's use
+these techniques to generate some awesome visualizations of the concept!
+
+## Divisibility Graphs
+
+[Loom](https://github.com/aysylu/loom) is a Clojure framework that allows for the easy creation of
+graphs. Using Loom, and the lessons we learned from generating our divisibility maps, we can also
+generate Loom graphs:
+
+```clojure
+(defn divisibility-graph
+  "Creates a directed graph to encapsulates the structure of the divisibility map for an integer n"
+  [n]
+  (let [zero-transitions (map (fn [i] [i (mod (* 2 i) n)])       (range n))
+        one-transitions  (map (fn [i] [i (mod (inc (* 2 i)) n)]) (range n))]
+    (as-> (digraph) g
+      (apply add-edges g zero-transitions)
+      (apply add-edges g one-transitions)
+      (add-attr-to-edges g :label 0 zero-transitions)
+      (add-attr-to-edges g :label 1 one-transitions))))
+```
+
+There's a lot going on in this function, so let's break it down.
+
+* The let bindings create the graph's edge definitions. There are two, one for edges labled 0 and
+  another for edges labeled with 1. Each tuple contains 2 node ids, which are the current node and
+  node the edge to go to respectively.
+
+* After defining our edges, we can create a directed graph and then add the edges. We also add
+  labels to our edges. The reason for this will be made clear in a moment.
